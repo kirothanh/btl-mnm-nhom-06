@@ -1,6 +1,6 @@
 # btl-mnm-nhom-06
 
-## Thành viên
+## Thành viên.
 1. Đỗ Thị Minh Huyền - 2121051221 
 2. Đinh Tiến Thành - 2121050236
 3. Hoàng Đức Mạnh - 2121051233
