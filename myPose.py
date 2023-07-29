@@ -90,6 +90,8 @@ class myPose():
             CLAP = "C"
         else:
             CLAP = "N"
+        if clap_threshold < distance and distance < 200:
+            CLAP = "SW"
 
         cv2.putText(image, CLAP, (10, 30), cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 0), 3)
 

@@ -1,6 +1,7 @@
 import cv2
 import pyautogui 
 from myPose import myPose
+from datetime import datetime
 
 class myGame():
     def __init__(self):
@@ -9,6 +10,18 @@ class myGame():
         self.x_position = 1 # 0: Ray ben trai, 1: Ray giua, 2: Ray ben phai
         self.y_position = 1 # 0: Down, 1: Stand, 2: jump
         self.clap_duration = 0 # So frame ma ng dung vo tay
+        self.score = self.load_score_from_file()  # Load the previous score from file
+        self.switch_duration = 0 # So frame ma nguoi dung chuyen doi tu the tay giua khong chuyen dong va vo tay
+
+    def load_score_from_file(self, filename="score.txt"):
+        try:
+            with open(filename, "r") as file:
+                return int(file.read())
+        except FileNotFoundError:
+            return 0
+        except Exception as e:
+            print("Error loading the score:", str(e))
+            return 0
 
     def move_LRC(self, LRC):
         if LRC=="L":
@@ -83,18 +96,36 @@ class myGame():
                                 self.pose.save_shoulder_line_y(image, results)
                                 pyautogui.click(x=720, y = 560, button = "left")
 
+                                self.score += 1  # Increase the score by 1 each time the game starts
+
                             self.clap_duration = 0
+                    
+                    elif CLAP == "SW":
+                        self.switch_duration += 1
                     else:
                         self.clap_duration = 0
 
 
                 cv2.imshow("Game", image)
+                cv2.waitKey(1)
 
-            if cv2.waitKey(1) == ord('q'):
+            if self.switch_duration == 20:
                 break
 
+        self.save_score_to_file()  # Save the player's score when the game ends
         cap.release()
         cv2.destroyAllWindows()
+
+    def save_score_to_file(self, filename="score.txt"):
+        try:
+            with open(filename, "a") as file:  # Use "a" (append) mode to add scores to a new line
+                print("\n")
+                current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Get current date and time
+                score_data = f"{current_time}: {self.score}\n"  # Format the score data
+                file.write(score_data)  # Write the score data to the file
+            print("Score saved successfully.")
+        except Exception as e:
+            print("Error saving the score:", str(e))
 
 
 myGame = myGame()
