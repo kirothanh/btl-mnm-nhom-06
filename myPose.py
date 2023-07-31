@@ -88,11 +88,11 @@ class myPose():
         clap_threshold = 100
         if distance < clap_threshold:
             CLAP = "C"
+        elif clap_threshold < distance and distance < 200:
+            CLAP = "RH"
         else:
-            CLAP = "N"
-        if clap_threshold < distance and distance < 200:
-            CLAP = "SW"
-
+            CLAP = "N"  
+     
         cv2.putText(image, CLAP, (10, 30), cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 0), 3)
 
         return image, CLAP
@@ -101,8 +101,7 @@ class myPose():
         image_height, image_width, _ = image.shape
 
         leftShoulder_y = int(results.pose_landmarks.landmark[self.mp_pose.PoseLandmark.LEFT_SHOULDER].y * image_height)
-        rightShoulder_y = int(
-            results.pose_landmarks.landmark[self.mp_pose.PoseLandmark.RIGHT_SHOULDER].y * image_height)
+        rightShoulder_y = int( results.pose_landmarks.landmark[self.mp_pose.PoseLandmark.RIGHT_SHOULDER].y * image_height)
 
         self.shoudler_line_y = abs(leftShoulder_y + rightShoulder_y) // 2
         return

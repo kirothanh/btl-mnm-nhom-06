@@ -11,7 +11,7 @@ class myGame():
         self.y_position = 1 # 0: Down, 1: Stand, 2: jump
         self.clap_duration = 0 # So frame ma ng dung vo tay
         self.score = self.load_score_from_file()  # Load the previous score from file
-        self.switch_duration = 0 # So frame ma nguoi dung chuyen doi tu the tay giua khong chuyen dong va vo tay
+        self.raise_duration = 0 # So frame ma nguoi dung dua tay len de bat dau choi
 
     def load_score_from_file(self, filename="score.txt"):
         try:
@@ -78,13 +78,13 @@ class myGame():
                         image, JSD = self.pose.checkPose_JSD(image, results)
                         self.move_JSD(JSD)
                     else:
-                        cv2.putText(image, "Clap your hand to start!", (5, image_height-10), cv2.FONT_HERSHEY_PLAIN, 2, (255,255,0), 3)
-
+                        cv2.putText(image, "Raise your hand to start!", (5, image_height-10), cv2.FONT_HERSHEY_PLAIN, 2, (255,255,0), 3)
+ 
                     image, CLAP = self.pose.checkPose_Clap(image, results)
-                    if CLAP == "C":
-                        self.clap_duration +=1
+                    if CLAP == "RH":
+                        self.raise_duration +=1
 
-                        if self.clap_duration == 10: #10 frame
+                        if self.raise_duration == 10: #10 frame
                             if self.game_started:
                                 # Reset
                                 self.x_position  = 1
@@ -98,18 +98,18 @@ class myGame():
 
                                 self.score += 1  # Increase the score by 1 each time the game starts
 
-                            self.clap_duration = 0
+                            self.raise_duration = 0
                     
-                    elif CLAP == "SW":
-                        self.switch_duration += 1
+                    elif CLAP == "C":
+                        self.clap_duration += 1
                     else:
-                        self.clap_duration = 0
+                        self.raise_duration = 0
 
 
                 cv2.imshow("Game", image)
                 cv2.waitKey(1)
 
-            if self.switch_duration == 20:
+            if self.clap_duration == 40:
                 break
 
         self.save_score_to_file()  # Save the player's score when the game ends
